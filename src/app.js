@@ -37,10 +37,7 @@ function startGame() {
         }
       },
     );
-  }
-  ask();
-}
-startGame();
+
 
 module.exports = {
   startGame,
