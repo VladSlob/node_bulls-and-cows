@@ -13,37 +13,39 @@
  * Example: { bulls: 1, cows: 2 }
  */
 function getBullsAndCows(userInput, numberToGuess) {
-  const user = userInput.toString().split('');
-  const guess = numberToGuess.toString().split('');
-
-  let bulls = 0;
-  let cows = 0;
-
-  const unmatchedUser = [];
-  const unmatchedGuess = [];
-
-  for (let i = 0; i < user.length; i++) {
-    if (user[i] === guess[i]) {
-      bulls++;
-    } else {
-      unmatchedUser.push(user[i]);
-      unmatchedGuess.push(guess[i]);
-    }
-  }
-
-  for (let i = 0; i < unmatchedUser.length; i++) {
-    const index = unmatchedGuess.indexOf(unmatchedUser[i]);
-
-    if (index !== -1) {
-      cows++;
-      unmatchedGuess.splice(index, 1);
-    }
-  }
-
-  return {
-    bulls,
-    cows,
+  const res = {
+    bulls: 0,
+    cows: 0,
   };
+
+  const userInputArr = userInput.toString().split('');
+  const numberToGuessArr = numberToGuess.toString().split('');
+
+  const usedGuess = [false, false, false, false];
+  const usedSecret = [false, false, false, false];
+
+  userInputArr.forEach((digit, i) => {
+    if (digit === numberToGuessArr[i]) {
+      res.bulls++;
+      usedGuess[i] = true;
+      usedSecret[i] = true;
+    }
+  });
+
+  userInputArr.forEach((digit, i) => {
+    if (usedGuess[i]) {
+      return;
+    }
+
+    numberToGuessArr.forEach((secretDigit, j) => {
+      if (!usedSecret[j] && digit === secretDigit) {
+        res.cows++;
+        usedSecret[j] = true;
+      }
+    });
+  });
+
+  return res;
 }
 
 module.exports = {
