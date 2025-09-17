@@ -1,44 +1,42 @@
 /* eslint-disable no-console */
 'use strict';
 
-const readline = require('node:readline');
-const { generateRandomNumber } = require('./modules/generateRandomNumber');
+const readline = require('readline');
+const { generateNumber } = require('./modules/generateNumber');
 const { checkIsValidUserInput } = require('./modules/checkIsValidUserInput');
 const { getBullsAndCows } = require('./modules/getBullsAndCows');
+
+const numberToGuess = generateNumber();
+
+console.log('Bulls & Cows');
+console.log('Guess the 4-digit number with unique digits.');
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-function startGame() {
-  const randomNumber = generateRandomNumber();
+function ask() {
+  rl.question('Your guess: ', (answer) => {
+    if (!checkIsValidUserInput(answer)) {
+      console.log(
+        'Invalid input. Must be 4 unique digits, not starting with 0.',
+      );
 
-  function ask() {
-    rl.question(
-      'Welcome to the game Bulls and cows! Please enter your number:',
-      (personNumber) => {
-        if (!checkIsValidUserInput(personNumber)) {
-          console.log('Invalid number. Please enter a valid 4-digit number.');
-          ask();
-        } else {
-          const result = getBullsAndCows(personNumber, randomNumber);
+      return ask();
+    }
 
-          if (result.bulls === 4) {
-            console.log('Congratulations! You guessed the number!');
-            rl.close();
-          } else {
-            const bulls = result.bulls;
-            const cows = result.cows;
+    const { bulls, cows } = getBullsAndCows(answer, numberToGuess);
 
-            console.log(`Bulls: ${bulls}, Cows: ${cows}`);
-            ask();
-          }
-        }
-      },
-    );
+    console.log(`${bulls} Bulls, ${cows} Cows`);
 
+    if (bulls === 4) {
+      console.log(`You win! The number was ${numberToGuess}`);
+      rl.close();
+    } else {
+      ask();
+    }
+  });
+}
 
-module.exports = {
-  startGame,
-};
+ask();
