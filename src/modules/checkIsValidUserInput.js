@@ -9,21 +9,22 @@
  * @return {boolean} - True if the user input is valid, false otherwise
  */
 function checkIsValidUserInput(userInput) {
-  if (
-    userInput.length !== 4 ||
-    userInput[0] === '0' ||
-    !/^\d+$/.test(userInput)
-  ) {
+  const userInputStr = userInput.toString();
+
+  if (userInputStr.length !== 4 || userInputStr[0] === '0') {
     return false;
   }
 
-  const digits = new Set();
+  if (!/^\d{4}$/.test(userInput)) {
+    return false;
+  }
 
-  for (const digit of userInput) {
-    if (digits.has(digit)) {
-      return false;
+  for (let i = 0; i < userInputStr.length; i++) {
+    for (let j = i + 1; j < userInputStr.length; j++) {
+      if (userInputStr[i] === userInputStr[j]) {
+        return false;
+      }
     }
-    digits.add(digit);
   }
 
   return true;
